@@ -4,7 +4,7 @@ import pandas as pd
 
 def main():
     
-    dataframe1 = pd.read_excel("..\Data cat personality and predation Cordonnier et al.xlsx")
+    dataframe1 = pd.read_excel(".\Data cat personality and predation Cordonnier et al.xlsx")
 
     # print(dataframe1)
     
