@@ -10,13 +10,14 @@ def main():
     
     # Plot histograms only for numeric columns
     print("Plotting histograms for numeric attributes...")
-    dataframe1[numeric_columns].hist(figsize=(20, 20), bins=10, edgecolor='black')
+    dataframe1[numeric_columns].hist(figsize=(12, 6.5), bins=10, edgecolor='black')
     plt.suptitle('Distribuția valorilor pentru atribute numerice (Histograme)', fontsize=16)
+    plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1, hspace=0.6, wspace=0.4)
     plt.show()
 
     # Plot boxplots for numeric columns
     print("Plotting boxplots for numeric attributes...")
-    dataframe1[numeric_columns].boxplot(figsize=(20, 10), vert=False)
+    dataframe1[numeric_columns].boxplot(figsize=(12, 6.5), vert=False)
     plt.title('Boxplot pentru atribute numerice')
     plt.show()
 
