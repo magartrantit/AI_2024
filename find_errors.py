@@ -2,7 +2,7 @@ import pandas as pd
 
 def main():
     # Load the Excel file
-    dataframe1 = pd.read_excel(r"C:\Users\diana\Documents\Facultate\Anul III\AI\AI_2024\Data cat personality and predation Cordonnier et al.xlsx", header=None)
+    dataframe1 = pd.read_excel(r".\Data cat personality and predation Cordonnier et al.xlsx", header=None)
     
     # 1. Find missing data in each column
     for column in dataframe1.columns:
