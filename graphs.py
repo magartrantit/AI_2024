@@ -1,27 +1,25 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# COLOANELE DUPA CE TRANSFORMAM TOTUL IN VALORI NUMERICE
-    # ['Sexe', 'Age', 'Nombre','Longement','Zone','Ext', 'Obs', 'Timide', 'Calme','Effrayé','Intelligent','Vigilant','Perséverant','Affectueux','Amical','Solitaire', 'Brutal','Dominant', 'Agressif','Impulsif','Prévisible','Distrait','Abondance','PredOiseau','PredMamm']  
 
 def main():
-  
-    # Load the Excel file (with headers)
-    dataframe1 = pd.read_excel(r".\Data cat personality and predation Cordonnier et al.xlsx")
-    
-    # Print the column names to verify
-    print("Columns in the dataset:", dataframe1.columns)
-    
-    # Define your columns correctly after verifying them
-    grouping_column = 'Race'
-    numeric_columns = ['Timide', 'Calme', 'Brutal', 'Agressif']
 
-    # Drop rows with missing values in the relevant columns
+    dataframe1 = pd.read_excel(r"./Modified_Data_cat_personality.xlsx")
+
+    print("Coloane in dataset:", dataframe1.columns)
+    
+    grouping_column = 'Race'
+    numeric_columns = ['Sexe', 'Age', 'Nombre','Logement','Zone','Ext', 'Obs', 'Timide', 'Calme','Effrayé','Intelligent','Vigilant','Perséverant','Affectueux','Amical','Solitaire', 'Brutal','Dominant', 'Agressif','Impulsif','Prévisible','Distrait','Abondance','PredOiseau','PredMamm']
+
+    # Dam drop la randurile care contin valori lipsa
     cleaned_df = dataframe1[[grouping_column] + numeric_columns].dropna()
     
-    # Create the stacked histogram and set the size of the figure
+
+
+    # STACKED HISTOGRAM
+
     cleaned_df.groupby(grouping_column)[numeric_columns].sum().T.plot(
-        kind='bar', stacked=True, edgecolor='black'
+        kind='bar', stacked=True, edgecolor='black', figsize=(14, 7)
     )
     
     plt.title('Stacked Histogram of Personality Traits by Race')
@@ -30,44 +28,33 @@ def main():
     plt.legend(title='Race', bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.tight_layout()
 
-    # Show the stacked histogram
     plt.show()
+
+
 
     #BOXPLOT
 
-    # Boxplot for numeric columns grouped by 'Race' with separate subplots for each numeric column
-    fig, axes = plt.subplots(2, 2, figsize=(12, 6.5), sharex=False, sharey=False)  
+    num_plots = len(numeric_columns)
+    
+    cols_per_row = 5
+    rows = (num_plots // cols_per_row) + (num_plots % cols_per_row)
+    fig, axes = plt.subplots(rows, cols_per_row, figsize=(14, rows * 3))
+    axes = axes.flatten()
 
-    # Boxplot for 'Timide'
-    cleaned_df.boxplot(column='Timide', by=grouping_column, vert=False, ax=axes[0, 0])
-    axes[0, 0].set_title('Timide')
-    axes[0, 0].set_xlabel('Trait Scores')
-    axes[0, 0].set_ylabel('Race')
+    for i, column in enumerate(numeric_columns):
+        cleaned_df.boxplot(column=column, by=grouping_column, vert=False, ax=axes[i])
+        axes[i].set_title(column, fontsize=8)
+        #axes[i].set_xlabel('Trait Scores', fontsize=6)
+        axes[i].set_ylabel('Race', fontsize=0)
+        axes[i].tick_params(axis='x', labelsize=6)
+        axes[i].tick_params(axis='y', labelsize=6)
 
-    # Boxplot for 'Calme'
-    cleaned_df.boxplot(column='Calme', by=grouping_column, vert=False, ax=axes[0, 1])
-    axes[0, 1].set_title('Calme')
-    axes[0, 1].set_xlabel('Trait Scores')
-    axes[0, 1].set_ylabel('Race')
-
-    # Boxplot for 'Brutal'
-    cleaned_df.boxplot(column='Brutal', by=grouping_column, vert=False, ax=axes[1, 0])
-    axes[1, 0].set_title('Brutal')
-    axes[1, 0].set_xlabel('Trait Scores')
-    axes[1, 0].set_ylabel('Race')
-
-    # Boxplot for 'Agressif'
-    cleaned_df.boxplot(column='Agressif', by=grouping_column, vert=False, ax=axes[1, 1])
-    axes[1, 1].set_title('Agressif')
-    axes[1, 1].set_xlabel('Trait Scores')
-    axes[1, 1].set_ylabel('Race')
-
-    # Overall title and layout adjustments
+    
+    
+    # Add a global title and adjust layout
     fig.suptitle('Boxplot of Personality Traits by Race', fontsize=16)
-    plt.tight_layout(rect=[0, 0, 1, 0.96])  
-
-    # Show the plot
+    plt.tight_layout(rect=[0, 0, 1, 0.95])
+    plt.subplots_adjust(hspace=0.4)
     plt.show()
-
 if __name__ == "__main__":
     main()
