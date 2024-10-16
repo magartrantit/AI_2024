@@ -9,7 +9,7 @@ def main():
     # Load the Excel file
     dataframe1 = pd.read_excel(r".\Data cat personality and predation Cordonnier et al.xlsx")
 
-    to_number('Race', dataframe1)
+    #to_number('Race', dataframe1)
     to_number('Sexe', dataframe1)
     to_number('Nombre', dataframe1)
     to_number('Age', dataframe1)
