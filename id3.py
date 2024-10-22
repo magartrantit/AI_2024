@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 def main():
     
-    dataframe1 = pd.read_excel("C:\\Users\\Gabriel\\Desktop\\College\\Artifial Intelligence\\Modified_Data_cat_personality.xlsx")
+    dataframe1 = pd.read_excel(r".\Data cat personality and predation Cordonnier et al.xlsx")
 
     sex = [0, 1]  
     age = [0, 1, 2, 3] 
