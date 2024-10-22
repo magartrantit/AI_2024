@@ -82,20 +82,22 @@ def main():
             rd.choice(distrait),
             rd.choice(abondance),
             rd.choice(predOiseau),
-            rd.choice(predMamm)
+            rd.choice(predMamm),
+            None
         ]
         
         column.append(random_row)
     all_features = ["Row.names", "Horodateur", "Sexe", "Age", "Nombre", "Logement", "Zone", "Ext", "Obs", "Timide", "Calme", "Effrayé", 
                     "Intelligent", "Vigilant", "Perséverant", "Affectueux", "Amical", 
                     "Solitaire", "Brutal", "Dominant", "Agressif", "Impulsif",
-                     "Prévisible", "Distrait", "Abondance", "PredOiseau", "PredMamm"]    
+                     "Prévisible", "Distrait", "Abondance", "PredOiseau", "PredMamm", "Plus"]    
     new_instances_df = pd.DataFrame(column, columns=all_features)
     predictions = clf.predict(new_instances_df[features])
 
-    new_instances_df["Predicted_Race"] = predictions
+    new_instances_df["Race"] = predictions
+    dataframe1 = pd.concat([dataframe1, new_instances_df])
 
-    print(new_instances_df)
+    dataframe1.to_excel(r".\\Data_cat_personality_with_new_instances.xlsx", index=False)
 
 if __name__ == "__main__":
     main()
