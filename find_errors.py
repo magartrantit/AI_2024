@@ -2,8 +2,7 @@ import pandas as pd
 
 def main():
     # Load the Excel file
-    dataframe1 = pd.read_excel(r"C:\Users\diana\Documents\Facultate\Anul III\AI\AI_2024\Data cat personality and predation Cordonnier et al.xlsx", header=None)
-    
+    dataframe1 = pd.read_excel(r".\Data cat personality and predation Cordonnier et al.xlsx")
     # 1. Find missing data in each column
     for column in dataframe1.columns:
         missing_data = dataframe1[column].isnull()
@@ -18,7 +17,7 @@ def main():
     
     # Count occurrences of each breed
     cat_breed_counts = cat_breeds_column.value_counts()
-    
+
     print("\nNumărul de instanțe pentru fiecare rasă de pisici (prescurtat):")
     print(cat_breed_counts)
 
