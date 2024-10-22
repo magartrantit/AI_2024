@@ -32,7 +32,7 @@ def save_modified_data(dataframe, file_path):
 def main():
     # Load the original dataset
     dataframe1 = pd.read_excel(r".\Data cat personality and predation Cordonnier et al.xlsx")
-    
+    #print(dataframe1)
     # Apply the transformations from convert_to_number.py
     to_number('Sexe', dataframe1)
     to_number('Nombre', dataframe1)
