@@ -5,7 +5,7 @@ import random as rd
 
 def main():
     
-    dataframe1 = pd.read_excel("C:\\Users\\Gabriel\\Desktop\\College\\Artifial Intelligence\\Data cat personality and predation Cordonnier et al.xlsx")
+    dataframe1 = pd.read_excel(".\Data cat personality and predation Cordonnier et al.xlsx")
 
     sum = 0
     count = 0
