@@ -31,7 +31,7 @@ def save_modified_data(dataframe, file_path):
 
 def main():
     # Load the original dataset
-    dataframe1 = pd.read_excel(r".\Data cat personality and predation Cordonnier et al.xlsx")
+    dataframe1 = pd.read_excel(r".\\Data cat personality and predation Cordonnier et al.xlsx")
     #print(dataframe1)
     # Apply the transformations from convert_to_number.py
     to_number('Sexe', dataframe1)
@@ -44,7 +44,7 @@ def main():
     task_gabi_modifications(dataframe1)
 
     # Save the modified dataset to a new Excel file
-    modified_file_path = r"./Modified_Data_cat_personality.xlsx"
+    modified_file_path = r".\\Modified_Data_cat_personality.xlsx"
     save_modified_data(dataframe1, modified_file_path)
 
 if __name__ == "__main__":
