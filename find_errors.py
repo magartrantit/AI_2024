@@ -16,7 +16,7 @@ def main():
     cat_breeds_column = dataframe1.iloc[1:, 4]  # Selectează coloana după index
 
     cat_breed_counts = cat_breeds_column.value_counts()
-    
+
     print("\nNumărul de instanțe pentru fiecare rasă de pisici (prescurtat):")
     print(cat_breed_counts)
 
