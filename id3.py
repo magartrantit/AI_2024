@@ -3,8 +3,6 @@ import pandas as pd
 import random as rd
 from sklearn import tree
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.preprocessing import OneHotEncoder
-import matplotlib.pyplot as plt
 
 def apply_counts(df: pd.DataFrame, count_col: str):
     """ Denormalise a dataframe with a 'Counts' column by
@@ -20,6 +18,7 @@ def apply_counts(df: pd.DataFrame, count_col: str):
 def main():
     
     dataframe1 = pd.read_excel(".\\Modified_Data_cat_personality.xlsx")
+    dataframe = pd.read_excel(".\\Modified_Data_cat_personality.xlsx")
 
     sex = [0, 1]  
     age = [0, 1, 2, 3] 
@@ -61,7 +60,6 @@ def main():
 
     
     X = dataframe1[features]
-    dataframe = dataframe1
 
     for i, j in dataframe1.iterrows():
         if j['Obs'] == 4:
@@ -81,7 +79,7 @@ def main():
     # f = tree.plot_tree(clf, ax=ax, fontsize=10, feature_names=features)
     # plt.show()
     column = []
-    cnt = (dataframe1[dataframe1.columns[0]].count())
+    cnt = (dataframe[dataframe1.columns[0]].count())
     print(cnt)
     for i in range(0, 6):
         random_row = [
@@ -124,11 +122,10 @@ def main():
     predictions = clf.predict(new_instances_df[features])
 
     new_instances_df["Race"] = predictions
+
     dataframe = pd.concat([dataframe, new_instances_df])
 
-    # dataframe1.to_excel(r".\\Data_cat_personality_with_new_instances.xlsx", index=False)
-
-
+    dataframe.to_excel(r".\\Data_cat_personality_with_new_instances.xlsx", index=False)
 
 if __name__ == "__main__":
     main()
