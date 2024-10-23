@@ -97,7 +97,7 @@ def main():
     new_instances_df["Race"] = predictions
     dataframe1 = pd.concat([dataframe1, new_instances_df])
 
-    dataframe1.to_excel(r".\\Data_cat_personality_with_new_instances.xlsx", index=False)
+    dataframe1.to_excel(r".\\Modified_Data_cat_personality.xlsx", index=False)
 
 if __name__ == "__main__":
     main()
