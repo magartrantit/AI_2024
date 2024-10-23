@@ -3,13 +3,22 @@ import pandas as pd
 import random as rd
 from sklearn import tree
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.preprocessing import OneHotEncoder
-import matplotlib.pyplot as plt
+
+def apply_counts(df: pd.DataFrame, count_col: str):
+    """ Denormalise a dataframe with a 'Counts' column by
+    multiplying that column by the count and dropping the 
+    count_col. """
+    feats = [c for c in df.columns if c != count_col]
+    return pd.concat([
+        pd.DataFrame([list(r[feats])] * r[count_col], columns=feats)
+        for i, r in df.iterrows()
+    ], ignore_index=True)
 
 
 def main():
     
     dataframe1 = pd.read_excel(".\\Modified_Data_cat_personality.xlsx")
+    dataframe = pd.read_excel(".\\Modified_Data_cat_personality.xlsx")
 
     sex = [0, 1]  
     age = [0, 1, 2, 3] 
@@ -44,8 +53,25 @@ def main():
                     "Solitaire", "Brutal", "Dominant", "Agressif", "Impulsif",
                      "Prévisible", "Distrait", "Abondance", "PredOiseau", "PredMamm"] 	
 
+    # features = ["Sexe", "Logement", "Zone", "Ext", "Timide", "Calme", "Effrayé", 
+    #                 "Intelligent", "Vigilant", "Perséverant", "Affectueux", "Amical", 
+    #                 "Solitaire", "Brutal", "Dominant", "Agressif", "Impulsif",
+    #                  "Prévisible", "Distrait", "Abondance", "PredOiseau", "PredMamm"]
+
     
     X = dataframe1[features]
+
+    for i, j in dataframe1.iterrows():
+        if j['Obs'] == 4:
+            for k in range(3):
+                dataframe1 = pd.concat([dataframe1, pd.DataFrame(j).T], ignore_index=True)
+        if j['Obs'] == 3:
+            for k in range(2):
+                dataframe1 = pd.concat([dataframe1, pd.DataFrame(j).T], ignore_index=True)
+        if j['Obs'] == 2:
+            dataframe1 = pd.concat([dataframe1, pd.DataFrame(j).T], ignore_index=True)
+
+
 
     clf = DecisionTreeClassifier(criterion="entropy").fit(X,Y)  
     
@@ -53,7 +79,8 @@ def main():
     # f = tree.plot_tree(clf, ax=ax, fontsize=10, feature_names=features)
     # plt.show()
     column = []
-    cnt = (dataframe1[dataframe1.columns[0]].count())
+    cnt = (dataframe[dataframe1.columns[0]].count())
+    print(cnt)
     for i in range(0, 6):
         random_row = [
             cnt + i,
@@ -95,9 +122,10 @@ def main():
     predictions = clf.predict(new_instances_df[features])
 
     new_instances_df["Race"] = predictions
-    dataframe1 = pd.concat([dataframe1, new_instances_df])
 
-    dataframe1.to_excel(r".\\Modified_Data_cat_personality.xlsx", index=False)
+    dataframe = pd.concat([dataframe, new_instances_df])
+
+    dataframe.to_excel(r".\\Data_cat_personality_with_new_instances.xlsx", index=False)
 
 if __name__ == "__main__":
     main()
