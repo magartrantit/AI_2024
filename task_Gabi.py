@@ -49,9 +49,6 @@ def main():
     
     
     print(dataframe1)
-                
-                    
-                    
                     
                     
 if __name__ == "__main__":
