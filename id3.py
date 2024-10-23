@@ -3,11 +3,10 @@ import pandas as pd
 import random as rd
 from sklearn import tree
 from sklearn.tree import DecisionTreeClassifier
+import matplotlib.pyplot as plt
 
 def apply_counts(df: pd.DataFrame, count_col: str):
-    """ Denormalise a dataframe with a 'Counts' column by
-    multiplying that column by the count and dropping the 
-    count_col. """
+
     feats = [c for c in df.columns if c != count_col]
     return pd.concat([
         pd.DataFrame([list(r[feats])] * r[count_col], columns=feats)
@@ -48,15 +47,10 @@ def main():
 
     Y = dataframe1["Race"]
 
-    features = ["Sexe", "Logement", "Zone", "Ext", "Obs", "Timide", "Calme", "Effrayé", 
+    features = ["Sexe", "Logement", "Zone", "Ext", "Timide", "Calme", "Effrayé", 
                     "Intelligent", "Vigilant", "Perséverant", "Affectueux", "Amical", 
                     "Solitaire", "Brutal", "Dominant", "Agressif", "Impulsif",
                      "Prévisible", "Distrait", "Abondance", "PredOiseau", "PredMamm"] 	
-
-    # features = ["Sexe", "Logement", "Zone", "Ext", "Timide", "Calme", "Effrayé", 
-    #                 "Intelligent", "Vigilant", "Perséverant", "Affectueux", "Amical", 
-    #                 "Solitaire", "Brutal", "Dominant", "Agressif", "Impulsif",
-    #                  "Prévisible", "Distrait", "Abondance", "PredOiseau", "PredMamm"]
 
     
     X = dataframe1[features]
