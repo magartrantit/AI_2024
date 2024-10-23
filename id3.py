@@ -1,4 +1,4 @@
-import datetime;
+import datetime
 import pandas as pd
 import random as rd
 from sklearn import tree
@@ -125,7 +125,7 @@ def main():
 
     dataframe = pd.concat([dataframe, new_instances_df])
 
-    dataframe.to_excel(r".\\Data_cat_personality_with_new_instances.xlsx", index=False)
+    #dataframe.to_excel(r".\\Modified_Data_cat_personality.xlsx", index=False)
 
 if __name__ == "__main__":
     main()
