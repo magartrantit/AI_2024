@@ -11,10 +11,8 @@ def main():
     grouping_column = 'Race'
     numeric_columns = ['Sexe', 'Age', 'Nombre','Logement','Zone','Ext', 'Obs', 'Timide', 'Calme','Effrayé','Intelligent','Vigilant','Perséverant','Affectueux','Amical','Solitaire', 'Brutal','Dominant', 'Agressif','Impulsif','Prévisible','Distrait','Abondance','PredOiseau','PredMamm']
 
-    # Dam drop la randurile care contin valori lipsa
     cleaned_df = dataframe1[[grouping_column] + numeric_columns].dropna()
-    
-    # STACKED HISTOGRAM
+
     cleaned_df.groupby(grouping_column)[numeric_columns].sum().T.plot(
         kind='bar', stacked=True, edgecolor='black', figsize=(14, 7)
     )
@@ -27,16 +25,13 @@ def main():
     plt.show()
 
 
-    # BOX PLOT
-    # Împărțirea coloanelor numerice în două jumătăți
     half = len(numeric_columns) // 2
     first_half_columns = numeric_columns[:half]
     second_half_columns = numeric_columns[half:]
-    
-    # Prima fereastră de boxploturi (primul set de coloane)
+
     num_plots = len(first_half_columns)
     cols_per_row = 4
-    rows = (num_plots + cols_per_row - 1) // cols_per_row  # Calcul corect al numărului de rânduri necesare
+    rows = (num_plots + cols_per_row - 1) // cols_per_row
     fig1, axes1 = plt.subplots(rows, cols_per_row, figsize=(14, rows * 3))
     axes1 = axes1.flatten()
 
@@ -47,19 +42,16 @@ def main():
         axes1[i].tick_params(axis='x', labelsize=6)
         axes1[i].tick_params(axis='y', labelsize=6)
 
-    # Ascunde subploturile goale (dacă există)
     for j in range(i + 1, len(axes1)):
         fig1.delaxes(axes1[j])
 
-    # Titlul și layout-ul pentru prima fereastră
     fig1.suptitle('Boxplot of Personality Traits by Race (Set 1)', fontsize=16)
     plt.tight_layout(rect=[0, 0, 1, 0.95])
     plt.subplots_adjust(hspace=0.4)
     plt.show()
 
-    # A doua fereastră de boxploturi (al doilea set de coloane)
     num_plots = len(second_half_columns)
-    rows = (num_plots + cols_per_row - 1) // cols_per_row  # Calcul corect al numărului de rânduri necesare
+    rows = (num_plots + cols_per_row - 1) // cols_per_row  
     fig2, axes2 = plt.subplots(rows, cols_per_row, figsize=(14, rows * 3))
     axes2 = axes2.flatten()
 
@@ -70,11 +62,9 @@ def main():
         axes2[i].tick_params(axis='x', labelsize=6)
         axes2[i].tick_params(axis='y', labelsize=6)
 
-    # Ascunde subploturile goale (dacă există)
     for j in range(i + 1, len(axes2)):
         fig2.delaxes(axes2[j])
 
-    # Titlul și layout-ul pentru a doua fereastră
     fig2.suptitle('Boxplot of Personality Traits by Race (Set 2)', fontsize=16)
     plt.tight_layout(rect=[0, 0, 1, 0.95])
     plt.subplots_adjust(hspace=0.4)
