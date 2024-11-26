@@ -6,44 +6,44 @@ from typing import Type, List, Tuple
 class Cost(ABC):
     @staticmethod
     @abstractmethod
-    def function(network_output: np.ndarray, expected: np.ndarray):
+    def function(network_output, expected):
         pass
 
     @staticmethod
     @abstractmethod
-    def derivative(weighted_sums: np.ndarray, network_output: np.ndarray, expected: np.ndarray):
+    def derivative(weighted_sums, network_output, expected):
         pass
 
 
 class CrossEntropyCost(Cost):
     @staticmethod
-    def function(network_output: np.ndarray, expected: np.ndarray):
+    def function(network_output, expected):
         return -np.sum(np.nan_to_num(expected * np.log(network_output) + (1 - expected) * np.log(1 - network_output)))
 
     @staticmethod
-    def derivative(weighted_sums: np.ndarray, network_output: np.ndarray, expected: np.ndarray):
+    def derivative(weighted_sums, network_output, expected):
         return network_output - expected
 
 
 class Activation(ABC):
     @staticmethod
     @abstractmethod
-    def function(weighted_sums: np.ndarray):
+    def function(weighted_sums):
         pass
 
     @staticmethod
     @abstractmethod
-    def derivative(weighted_sums: np.ndarray):
+    def derivative(weighted_sums):
         pass
 
 
 class RELu(Activation):
     @staticmethod
-    def function(weighted_sums: np.ndarray):
+    def function(weighted_sums):
         return np.maximum(0, weighted_sums)
 
     @staticmethod
-    def derivative(weighted_sums: np.ndarray):
+    def derivative(weighted_sums):
         return (weighted_sums > 0).astype(float)
 
 
@@ -55,7 +55,7 @@ class Network:
         self.cost = cost
         self.activation = activation
 
-    def forward_propagation(self, data_input: np.ndarray):
+    def forward_propagation(self, data_input):
         outputs, inputs = [data_input], []
         for w, b in zip(self.weights[:-1], self.biases[:-1]):
             z = np.dot(w, outputs[-1]) + b
@@ -66,11 +66,11 @@ class Network:
         outputs.append(self.softmax(z))
         return outputs, inputs
 
-    def softmax(self, z: np.ndarray):
+    def softmax(self, z):
         exp_z = np.exp(z - np.max(z))
         return exp_z / np.sum(exp_z)
 
-    def backpropagation(self, data_input: np.ndarray, data_output: np.ndarray):
+    def backpropagation(self, data_input, data_output):
         outputs, inputs = self.forward_propagation(data_input)
         delta = self.cost.derivative(inputs[-1], outputs[-1], data_output)
         weight_gradients = [np.outer(delta, outputs[-2])]
