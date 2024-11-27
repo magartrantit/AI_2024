@@ -37,29 +37,12 @@ def preprocess_data(file_path):
     
     return train_data, val_data, label_encoder
 
-def train_cat_classifier(file_path, input_size, hidden_sizes, output_size, epochs=30, mini_batch_size=16, learning_rate=0.01):
-    # Preprocess the data
-    train_data, val_data, label_encoder = preprocess_data(file_path)
-    
-    # Initialize the network
-    network = Network(
-        input_size=input_size,
-        hidden_sizes=hidden_sizes,
-        output_size=output_size,
-        cost=CrossEntropyCost,
-        activation=RELu
-    )
-    
-    network.train(
-    training_data=train_data,
-    epochs=epochs,
-    batch_size=mini_batch_size,  
-    lr=learning_rate,            
-    validation_data=val_data
-    )
-
-    
-    return network, label_encoder
+def train_cat_classifier(training_data, validation_data, input_size, hidden_sizes, output_size, epochs, batch_size, lr, reg_param):
+    cost = CrossEntropyCost()
+    activation = RELu()
+    network = Network(input_size, hidden_sizes, output_size, cost, activation)
+    network.train(training_data, epochs, batch_size, lr, reg_param, validation_data)
+    return network, None  # Assuming encoder is not used in this context
 
 if __name__ == "__main__":
     dataset_path = ".\\Modified_Data_cat_personality.xlsx"
@@ -80,12 +63,23 @@ if __name__ == "__main__":
         distinct_values = dataset[column].value_counts()
     
     # Train the neural network
-    hidden_layer_sizes = [64, 32]  # Example configuration for hidden layers
+    hidden_layer_sizes = [64, 32]
+    train_data, val_data, _ = preprocess_data(dataset_path)
+    epochs = 40
+    batch_size = 16
+    lr = 0.005
+    reg_param = 0.1  # Assuming a regularization parameter
+
     trained_network, encoder = train_cat_classifier(
-        file_path=dataset_path,
+        training_data=train_data,
+        validation_data=val_data,
         input_size=num_features,
         hidden_sizes=hidden_layer_sizes,
-        output_size=num_classes
+        output_size=num_classes,
+        epochs=epochs,
+        batch_size=batch_size,
+        lr=lr,
+        reg_param=reg_param
     )
     
     print("Model training complete.")
