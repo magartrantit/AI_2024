@@ -94,21 +94,16 @@ class Network:
         self.biases = [b - (lr / len(mini_batch)) * db for b, db in zip(self.biases, bias_changes)]
 
     def train(self, training_data, epochs: int, batch_size, lr, reg_param=0.0, validation_data=None):
-        # Pregătire date pentru antrenare (transformare în reprezentare one-hot)
         training_data = [(x, np.eye(self.sizes[-1])[y]) for x, y in training_data]
         
         for epoch in range(epochs):
-            # Amestecare aleatorie a datelor
             np.random.shuffle(training_data)
             
-            # Împărțire în mini-batch-uri
             mini_batches = [training_data[k:k + batch_size] for k in range(0, len(training_data), batch_size)]
             
             for mini_batch in mini_batches:
-                # Actualizare parametri pe fiecare mini-batch
                 self.update_parameters(mini_batch, lr, reg_param, len(training_data))
             
-            # Afișare acuratețe pe setul de validare, dacă există
             if validation_data:
                 # print(f"Epoch {epoch + 1}: {self.evaluate(validation_data)} / {len(validation_data)}")
                 training_accuracy = self.evaluate([(x, np.argmax(y)) for x, y in training_data])
@@ -120,6 +115,6 @@ class Network:
         results = []
         for x, y in data:
             predicted_class = np.argmax(self.forward_propagation(x)[0][-1])
-            true_class = np.argmax(y) if isinstance(y, np.ndarray) else y  # Verifică dacă `y` este one-hot
+            true_class = np.argmax(y) if isinstance(y, np.ndarray) else y 
             results.append(predicted_class == true_class)
         return sum(results)
