@@ -8,7 +8,7 @@ def to_number(attribute, dataframe):
     enc.fit(dataframe[attribute])
     dataframe[attribute] = enc.transform(dataframe[attribute])
 
-def task_gabi_modifications(dataframe):
+def handle_missing_values(dataframe):
 
     sum_values = dataframe.loc[dataframe['Abondance'] != 'NSP', 'Abondance'].astype(int).sum()
     count_values = dataframe.loc[dataframe['Abondance'] != 'NSP', 'Abondance'].astype(int).count()
@@ -35,7 +35,7 @@ def main():
     to_number('Zone', dataframe1)
     to_number('Logement', dataframe1)
 
-    task_gabi_modifications(dataframe1)
+    handle_missing_values(dataframe1)
 
     modified_file_path = r".\\Modified_Data_cat_personality.xlsx"
     save_modified_data(dataframe1, modified_file_path)
