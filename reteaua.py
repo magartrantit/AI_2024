@@ -1,61 +1,50 @@
 import numpy as np
-from abc import ABC, abstractmethod
-from typing import Type, List, Tuple
 
-
-class Cost(ABC):
+class Cost:
     @staticmethod
-    @abstractmethod
-    def function(network_output: np.ndarray, expected: np.ndarray):
-        pass
+    def function(network_output, expected):
+        raise NotImplementedError("Cost function not implemented.")
 
     @staticmethod
-    @abstractmethod
-    def derivative(weighted_sums: np.ndarray, network_output: np.ndarray, expected: np.ndarray):
-        pass
-
+    def derivative(weighted_sums, network_output, expected):
+        raise NotImplementedError("Cost derivative not implemented.")
 
 class CrossEntropyCost(Cost):
     @staticmethod
-    def function(network_output: np.ndarray, expected: np.ndarray):
+    def function(network_output, expected):
         return -np.sum(np.nan_to_num(expected * np.log(network_output) + (1 - expected) * np.log(1 - network_output)))
 
     @staticmethod
-    def derivative(weighted_sums: np.ndarray, network_output: np.ndarray, expected: np.ndarray):
+    def derivative(weighted_sums, network_output, expected):
         return network_output - expected
 
-
-class Activation(ABC):
+class Activation:
     @staticmethod
-    @abstractmethod
-    def function(weighted_sums: np.ndarray):
-        pass
+    def function(weighted_sums):
+        raise NotImplementedError("Activation function not implemented.")
 
     @staticmethod
-    @abstractmethod
-    def derivative(weighted_sums: np.ndarray):
-        pass
-
+    def derivative(weighted_sums):
+        raise NotImplementedError("Activation derivative not implemented.")
 
 class RELu(Activation):
     @staticmethod
-    def function(weighted_sums: np.ndarray):
+    def function(weighted_sums):
         return np.maximum(0, weighted_sums)
 
     @staticmethod
-    def derivative(weighted_sums: np.ndarray):
+    def derivative(weighted_sums):
         return (weighted_sums > 0).astype(float)
 
-
 class Network:
-    def __init__(self, input_size: int, hidden_sizes: List[int], output_size: int, cost: Type[Cost] = CrossEntropyCost, activation: Type[Activation] = RELu):
+    def __init__(self, input_size, hidden_sizes, output_size, cost, activation):
         self.sizes = [input_size] + hidden_sizes + [output_size]
         self.biases = [np.random.randn(y) for y in self.sizes[1:]]
         self.weights = [np.random.randn(y, x) / np.sqrt(x) for x, y in zip(self.sizes[:-1], self.sizes[1:])]
         self.cost = cost
         self.activation = activation
 
-    def forward_propagation(self, data_input: np.ndarray):
+    def forward_propagation(self, data_input):
         outputs, inputs = [data_input], []
         for w, b in zip(self.weights[:-1], self.biases[:-1]):
             z = np.dot(w, outputs[-1]) + b
@@ -66,11 +55,11 @@ class Network:
         outputs.append(self.softmax(z))
         return outputs, inputs
 
-    def softmax(self, z: np.ndarray):
+    def softmax(self, z):
         exp_z = np.exp(z - np.max(z))
         return exp_z / np.sum(exp_z)
 
-    def backpropagation(self, data_input: np.ndarray, data_output: np.ndarray):
+    def backpropagation(self, data_input, data_output):
         outputs, inputs = self.forward_propagation(data_input)
         delta = self.cost.derivative(inputs[-1], outputs[-1], data_output)
         weight_gradients = [np.outer(delta, outputs[-2])]
@@ -82,7 +71,7 @@ class Network:
             bias_gradients.insert(0, delta)
         return weight_gradients, bias_gradients
 
-    def update_parameters(self, mini_batch: List[Tuple[np.ndarray, np.ndarray]], lr: float, reg_param: float, n: int):
+    def update_parameters(self, mini_batch, lr, reg_param, n):
         weight_changes = [np.zeros_like(w) for w in self.weights]
         bias_changes = [np.zeros_like(b) for b in self.biases]
         for data_input, data_output in mini_batch:
@@ -94,16 +83,26 @@ class Network:
         self.weights = [(1 - lr * reg_param / n) * w - (lr / len(mini_batch)) * dw for w, dw in zip(self.weights, weight_changes)]
         self.biases = [b - (lr / len(mini_batch)) * db for b, db in zip(self.biases, bias_changes)]
 
-    def train(self, training_data: List[Tuple[np.ndarray, int]], epochs: int, batch_size: int, lr: float, reg_param: float = 0.0, validation_data=None):
+    def train(self, training_data, epochs: int, batch_size, lr, reg_param=0.0, validation_data=None):
+        # Transform training data to one-hot encoded format
         training_data = [(x, np.eye(self.sizes[-1])[y]) for x, y in training_data]
+        
         for epoch in range(epochs):
             np.random.shuffle(training_data)
             mini_batches = [training_data[k:k + batch_size] for k in range(0, len(training_data), batch_size)]
+            
             for mini_batch in mini_batches:
                 self.update_parameters(mini_batch, lr, reg_param, len(training_data))
+            
             if validation_data:
-                print(f"Epoch {epoch + 1}: {self.evaluate(validation_data)} / {len(validation_data)}")
+                training_accuracy = self.evaluate([(x, np.argmax(y)) for x, y in training_data])
+                validation_accuracy = self.evaluate(validation_data)
+                print(f"Epoch {epoch + 1}: Validation Accuracy = {validation_accuracy} / {len(validation_data)}, Training Accuracy = {training_accuracy} / {len(training_data)}")
 
-    def evaluate(self, data: List[Tuple[np.ndarray, int]]):
-        results = [(np.argmax(self.forward_propagation(x)[0][-1]), y) for x, y in data]
-        return sum(int(x == y) for x, y in results)
+    def evaluate(self, data):
+        results = []
+        for x, y in data:
+            predicted_class = np.argmax(self.forward_propagation(x)[0][-1])
+            true_class = np.argmax(y) if isinstance(y, np.ndarray) else y
+            results.append(predicted_class == true_class)
+        return sum(results)
