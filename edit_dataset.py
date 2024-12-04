@@ -11,9 +11,9 @@ def to_number(attribute, dataframe):
     dataframe[attribute] = enc.transform(dataframe[attribute])
 
 def handle_missing_values(dataframe):
-    # Use lowercase 'abondance' as per normalized column names
-    sum_values = dataframe.loc[dataframe['abondance'] != 'NSP', 'abondance'].astype(float).sum()
-    count_values = dataframe.loc[dataframe['abondance'] != 'NSP', 'abondance'].astype(float).count()
+
+    sum_values = dataframe.loc[dataframe['Abondance'] != 'NSP', 'Abondance'].astype(int).sum()
+    count_values = dataframe.loc[dataframe['Abondance'] != 'NSP', 'Abondance'].astype(int).count()
     final_number = round(sum_values / count_values, 2)
     dataframe['abondance'] = dataframe['abondance'].replace('NSP', final_number)
 
@@ -97,16 +97,6 @@ def main():
     to_number('logement', dataframe1)
 
     handle_missing_values(dataframe1)
-
-    # Confirm target column still exists
-    if target_column not in dataframe1.columns:
-        print(f"Error: Target column '{target_column}' is missing after preprocessing.")
-        print("Available columns:", dataframe1.columns.tolist())
-        return
-
-    print(f"Target Column Distribution Before SMOTE:\n{dataframe1[target_column].value_counts()}")
-
-    dataframe1 = apply_smote(dataframe1, target_column)
 
     modified_file_path = r"./Modified_Data_with_SMOTE.xlsx"
     dataframe1.to_excel(modified_file_path, index=False)
