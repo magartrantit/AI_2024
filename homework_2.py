@@ -66,7 +66,7 @@ if __name__ == "__main__":
     # Train the neural network
     hidden_layer_sizes = [64, 32]
     train_data, val_data, _ = preprocess_data(dataset_path)
-    epochs = 40
+    epochs = 100
     batch_size = 16
     lr = 0.005
     reg_param = 0.1  # Assuming a regularization parameter

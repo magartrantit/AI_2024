@@ -16,11 +16,9 @@ class Cost:
 class CrossEntropyCost(Cost):
     @staticmethod
     def function(network_output, expected):
-    def function(network_output, expected):
         return -np.sum(np.nan_to_num(expected * np.log(network_output) + (1 - expected) * np.log(1 - network_output)))
 
     @staticmethod
-    def derivative(weighted_sums, network_output, expected):
     def derivative(weighted_sums, network_output, expected):
         return network_output - expected
 
@@ -36,11 +34,9 @@ class Activation:
 class RELu(Activation):
     @staticmethod
     def function(weighted_sums):
-    def function(weighted_sums):
         return np.maximum(0, weighted_sums)
 
     @staticmethod
-    def derivative(weighted_sums):
     def derivative(weighted_sums):
         return (weighted_sums > 0).astype(float)
 
@@ -73,11 +69,9 @@ class Network:
         return outputs, inputs
 
     def softmax(self, z):
-    def softmax(self, z):
         exp_z = np.exp(z - np.max(z))
         return exp_z / np.sum(exp_z)
 
-    def backpropagation(self, data_input, data_output):
     def backpropagation(self, data_input, data_output):
         outputs, inputs = self.forward_propagation(data_input)
         delta = self.cost.derivative(inputs[-1], outputs[-1], data_output)
@@ -122,13 +116,15 @@ class Network:
                     validation_accuracy = self.evaluate(validation_data)
                     validation_percentage = (validation_accuracy / len(validation_data)) * 100
                     training_percentage = (training_accuracy / len(training_data)) * 100
-
-                    print(f"Epoch {epoch + 1}: Validation Accuracy = {validation_accuracy} / {len(validation_data)} ({validation_percentage:.2f}%), Training Accuracy = {training_accuracy} / {len(training_data)} ({training_percentage:.2f}%)")
+                    if(epoch % 20 == 0):
+                        print(f"Epoch {epoch + 1}: Validation Accuracy = {validation_accuracy} / {len(validation_data)} ({validation_percentage:.2f}%), Training Accuracy = {training_accuracy} / {len(training_data)} ({training_percentage:.2f}%)")
                 
                     training_error = 1 - (training_percentage / 100)
                     validation_error = 1 - (validation_percentage / 100)
-                    print("Training Error: ", training_error)
-                    print("Validation Error: ", validation_error)
+                    if(epoch % 20 == 0):
+
+                        print("Training Error: ", training_error)
+                        print("Validation Error: ", validation_error)
                     
                     training_errors.append(training_error)
                     validation_errors.append(validation_error)
