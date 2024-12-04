@@ -46,7 +46,7 @@ def train_cat_classifier(training_data, validation_data, input_size, hidden_size
     return network, None  # Assuming encoder is not used in this context
 
 if __name__ == "__main__":
-    dataset_path = ".\\Modified_Data_cat_personality.xlsx"
+    dataset_path = ".\\Modified_Data_with_SMOTE.xlsx"
     # Load the dataset for feature analysis
     dataset = pd.read_excel(dataset_path)
 
