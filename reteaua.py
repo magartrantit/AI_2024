@@ -104,7 +104,7 @@ class Network:
             for mini_batch in mini_batches:
                 self.update_parameters(mini_batch, lr, reg_param, len(training_data))
             
-            if validation_data:
+            if validation_data  and epoch % 50 == 0:
                 training_accuracy = self.evaluate([(x, np.argmax(y)) for x, y in training_data])
                 validation_accuracy = self.evaluate(validation_data)
                 print(f"Epoch {epoch + 1}: Validation Accuracy = {validation_accuracy} / {len(validation_data)}, Training Accuracy = {training_accuracy} / {len(training_data)}")
