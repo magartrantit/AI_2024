@@ -4,8 +4,11 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from reteaua import Network, CrossEntropyCost, RELu
+from collections import Counter
+
 
 def preprocess_data_with_smote(file_path):
+
     data = pd.read_excel(file_path)
     
     data = data.drop(columns=['Horodateur', 'Row.names'])
@@ -23,7 +26,6 @@ def preprocess_data_with_smote(file_path):
     label_encoder = LabelEncoder()
     y_encoded = label_encoder.fit_transform(y)
     
-    # Apply SMOTE
     smote = SMOTE(random_state=42)
     X_resampled, y_resampled = smote.fit_resample(X_scaled, y_encoded)
     
@@ -31,6 +33,11 @@ def preprocess_data_with_smote(file_path):
     
     train_data = [(x, y) for x, y in zip(X_train, y_train)]
     val_data = [(x, y) for x, y in zip(X_val, y_val)]
+    
+    class_counts = Counter(y_resampled)
+    mapped_counts = {label_encoder.inverse_transform([k])[0]: v for k, v in class_counts.items()}
+    
+    print("Distribuție clase după SMOTE:", mapped_counts)
     
     return train_data, val_data, label_encoder
 
@@ -48,7 +55,7 @@ if __name__ == "__main__":
 
     # Parametrii rețelei
     hidden_layer_sizes = [64, 32]
-    epochs = 40
+    epochs = 100
     batch_size = 16
     lr = 0.005
     reg_param = 0.1  
