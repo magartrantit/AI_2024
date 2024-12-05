@@ -97,7 +97,6 @@ class Network:
         self.biases = [b - (lr / len(mini_batch)) * db for b, db in zip(self.biases, bias_changes)]
 
     def train(self, training_data, epochs: int, batch_size, lr, reg_param=0.0, validation_data=None):
-    # Transform training data to one-hot encoded format
             training_data = [(x, np.eye(self.sizes[-1])[y]) for x, y in training_data]
             
             training_errors = []

@@ -55,7 +55,7 @@ if __name__ == "__main__":
 
     # Parametrii rețelei
     hidden_layer_sizes = [64, 32]
-    epochs = 400
+    epochs = 10
     batch_size = 16
     lr = 0.005
     reg_param = 0.1  
