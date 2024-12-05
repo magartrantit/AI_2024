@@ -93,21 +93,75 @@ class Network:
         self.biases = [b - (lr / len(mini_batch)) * db for b, db in zip(self.biases, bias_changes)]
 
     def train(self, training_data, epochs: int, batch_size, lr, reg_param=0.0, validation_data=None):
-        # Transform training data to one-hot encoded format
-        training_data = [(x, np.eye(self.sizes[-1])[y]) for x, y in training_data]
-        
-        for epoch in range(epochs):
-            np.random.shuffle(training_data)
+    # Transform training data to one-hot encoded format
+            training_data = [(x, np.eye(self.sizes[-1])[y]) for x, y in training_data]
             
-            mini_batches = [training_data[k:k + batch_size] for k in range(0, len(training_data), batch_size)]
+            training_errors = []
+            validation_errors = []
+            misclassified_points = []
             
-            for mini_batch in mini_batches:
-                self.update_parameters(mini_batch, lr, reg_param, len(training_data))
+            for epoch in range(epochs):
+                np.random.shuffle(training_data)
+                mini_batches = [training_data[k:k + batch_size] for k in range(0, len(training_data), batch_size)]
+                
+                for mini_batch in mini_batches:
+                    self.update_parameters(mini_batch, lr, reg_param, len(training_data))
+                
+                if validation_data:
+                    training_accuracy = self.evaluate([(x, np.argmax(y)) for x, y in training_data])
+                    validation_accuracy = self.evaluate(validation_data)
+                    validation_percentage = (validation_accuracy / len(validation_data)) * 100
+                    training_percentage = (training_accuracy / len(training_data)) * 100
+
+                    print(f"Epoch {epoch + 1}: Validation Accuracy = {validation_accuracy} / {len(validation_data)} ({validation_percentage:.2f}%), Training Accuracy = {training_accuracy} / {len(training_data)} ({training_percentage:.2f}%)")
+                
+                    training_error = 1 - (training_percentage / 100)
+                    validation_error = 1 - (validation_percentage / 100)
+                    print("Training Error: ", training_error)
+                    print("Validation Error: ", validation_error)
+                    
+                    training_errors.append(training_error)
+                    validation_errors.append(validation_error)
+                    
+                    misclassified = [(x, y) for x, y in validation_data if np.argmax(self.feedforward(x)) != y]
+                    misclassified_points.append(misclassified)
+                    
+            plt.figure(figsize=(10, 6))
+            plt.plot(range(1, epochs + 1), training_errors, label="Training Error")  
+            if validation_data:
+                plt.plot(range(1, epochs + 1), validation_errors, label="Validation Error")
+            plt.xlabel("Epoch")
+            plt.ylabel("Error")
+            plt.title("Training and Validation Errors Over Epochs")
+            plt.legend()
+            plt.grid(True)
+            plt.show()
             
-            if validation_data  and epoch % 50 == 0:
-                training_accuracy = self.evaluate([(x, np.argmax(y)) for x, y in training_data])
-                validation_accuracy = self.evaluate(validation_data)
-                print(f"Epoch {epoch + 1}: Validation Accuracy = {validation_accuracy} / {len(validation_data)}, Training Accuracy = {training_accuracy} / {len(training_data)}")
+            if validation_data and misclassified_points[-1]:
+                
+                validation_features = np.array([x for x, y in validation_data])
+                validation_labels = np.array([y for x, y in validation_data])
+                
+                pca = PCA(n_components=2)
+                reduced_features = pca.fit_transform(validation_features)
+                
+                misclassified_indices = [
+                    idx for idx, (x, y) in enumerate(validation_data)
+                    if np.argmax(self.feedforward(x)) != y
+                ]
+                misclassified_features = reduced_features[misclassified_indices]
+                
+                plt.figure(figsize=(8, 6))
+                plt.scatter(reduced_features[:, 0], reduced_features[:, 1], c=validation_labels, cmap='viridis', alpha=0.6, label="Correctly Classified")
+                plt.scatter(misclassified_features[:, 0], misclassified_features[:, 1], color='red', label="Misclassified Points", edgecolors='k')
+                plt.xlabel("PCA Component 1")
+                plt.ylabel("PCA Component 2")
+                plt.title("Misclassified Points in the Last Epoch (PCA Reduced)")
+                plt.legend()
+                plt.grid(True)
+                plt.show()
+
+
 
     def evaluate(self, data): 
         results = []
