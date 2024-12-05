@@ -1,12 +1,10 @@
 from imblearn.over_sampling import SMOTE
 import pandas as pd
 import numpy as np
-import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from reteaua import Network, CrossEntropyCost, RELu
 from collections import Counter
-
 
 def preprocess_data_with_smote(file_path):
 
@@ -51,24 +49,19 @@ def train_cat_classifier(training_data, validation_data, input_size, hidden_size
     return network, None  
 
 if __name__ == "__main__":
-    # Path către dataset
     dataset_path = ".\\Modified_Data_cat_personality.xlsx"
 
-    # Parametrii rețelei
     hidden_layer_sizes = [64, 32]
     epochs = 400
     batch_size = 16
     lr = 0.005
     reg_param = 0.1  
 
-    # Preprocesare date cu SMOTE
     train_data, val_data, _ = preprocess_data_with_smote(dataset_path)
 
-    # Determinarea dimensiunilor pentru rețea
-    num_features = len(train_data[0][0])  # Determinare automată din date
+    num_features = len(train_data[0][0])
     num_classes = len(np.unique([y for _, y in train_data]))
 
-    # Antrenare rețea
     trained_network, encoder = train_cat_classifier(
         training_data=train_data,
         validation_data=val_data,
